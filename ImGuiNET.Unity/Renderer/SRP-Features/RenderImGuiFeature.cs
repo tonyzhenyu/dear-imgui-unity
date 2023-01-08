@@ -12,9 +12,13 @@ namespace ImGuiNET.Unity
         class ExecuteCommandBufferPass : ScriptableRenderPass
         {
             public CommandBuffer cmd;
-
+            public CameraType FilterType { get; set; }
             public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
             {
+                if (((int)renderingData.cameraData.cameraType & (int)FilterType) <= 0)
+                {
+                    return;
+                }
                 context.ExecuteCommandBuffer(cmd);
             }
         }
@@ -30,7 +34,8 @@ namespace ImGuiNET.Unity
             {
                 cmd = commandBuffer,
                 renderPassEvent = renderPassEvent,
-            };
+                FilterType = CameraType.Game;
+        };
         }
 
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
@@ -42,7 +47,8 @@ namespace ImGuiNET.Unity
         }
     }
 }
-#else
+#endif
+
 namespace ImGuiNET.Unity
 {
     public class RenderImGuiFeature : UnityEngine.ScriptableObject
