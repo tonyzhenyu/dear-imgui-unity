@@ -1,10 +1,17 @@
 ﻿using UnityEngine.Rendering;
+using UnityEngine;
 
-#if HAS_URP
+#if !HAS_URP
+namespace ImGuiNET.Unity
+{
+    public class RenderImGuiFeature : UnityEngine.ScriptableObject
+    {
+        public CommandBuffer commandBuffer;
+    }
+}
+#else
 using UnityEngine.Rendering.Universal;
-#endif
 
-#if HAS_URP
 namespace ImGuiNET.Unity
 {
     public class RenderImGuiFeature : ScriptableRendererFeature
@@ -34,8 +41,8 @@ namespace ImGuiNET.Unity
             {
                 cmd = commandBuffer,
                 renderPassEvent = renderPassEvent,
-                FilterType = CameraType.Game;
-        };
+                FilterType = CameraType.Game
+                };
         }
 
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
@@ -45,15 +52,6 @@ namespace ImGuiNET.Unity
             _executeCommandBufferPass.cmd = commandBuffer;
             renderer.EnqueuePass(_executeCommandBufferPass);
         }
-    }
-}
-#endif
-
-namespace ImGuiNET.Unity
-{
-    public class RenderImGuiFeature : UnityEngine.ScriptableObject
-    {
-        public CommandBuffer commandBuffer;
     }
 }
 #endif
